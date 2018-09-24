@@ -111,6 +111,8 @@ public:
     int print(const char* format, ...);
     size_t write(const uint8_t *buffer, uint16_t size);
 
+    bool rm();
+
 private:
     FAT *fs;
 

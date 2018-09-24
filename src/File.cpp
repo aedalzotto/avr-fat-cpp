@@ -672,3 +672,24 @@ uint8_t File::available()
 
     return n > 0x7FFF ? 0x7FFF : n;
 }
+
+bool File::rm()
+{
+    // free any clusters - will fail if read-only or directory
+    if(!truncate(0))
+        return false;
+
+    // cache directory entry
+    dir_t* d = cache_dir_entry(FAT::CACHE_FOR_WRITE);
+    if(!d)
+        return false;
+
+    // mark entry deleted
+    d->name[0] = DIR_NAME_DELETED;
+
+    // set this SdFile closed
+    type = Type::CLOSED;
+
+    // write entry to SD
+    return fs->flush_cache();
+}

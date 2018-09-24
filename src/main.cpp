@@ -95,6 +95,14 @@ int main()
 
     if(file.open(root, "TEST.TXT", File::O_CREAT | File::O_WRITE)){
         printf("TEST.txt opened\n");
+        if(file.rm()){
+            printf("Ensuring file new\n");
+            if(file.open(root, "TEST.TXT", File::O_CREAT | File::O_WRITE))
+                printf("New test.txt opened\n");
+            else
+                return 0;
+        } else
+            return 0;
         printf("Writing to file\n");
         char buffer[127];
         sprintf(buffer, "Teste %u\n", 1);
