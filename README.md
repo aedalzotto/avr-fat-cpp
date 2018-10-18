@@ -1,4 +1,4 @@
-# avr-spi-cpp
+# avr-fat-cpp
 
 Lightweight FAT filesystem for AVR microcontrollers using SDCard I/O.
 Based on [greiman](https://github.com/greiman)'s [SdFat](https://github.com/greiman/SdFat) library.
