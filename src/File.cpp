@@ -68,8 +68,28 @@ bool File::open_root()
 
 bool File::ls(char *buffer, uint8_t options)
 {
-    dir_t* p = read_dir_cache();
+    dir_t* p = nullptr;
     buffer[0]=0;
+
+    if(!(options & (LS_FILE | LS_FOLDER)))
+        return false;
+
+    while((p = read_dir_cache())){
+        // done if past last used entry
+        if(p->name[0] == DIR_NAME_FREE)
+            return false; // Or true?
+        
+        if (p->name[0] == DIR_NAME_DELETED || p->name[0] == '.' || p->name[0] == 0x80)
+            continue;
+        
+        if(DIR_IS_SUBDIR(p) && !(options & LS_FOLDER))
+            continue;
+        
+        if(DIR_IS_FILE(p) && !(options & LS_FILE))
+            continue;
+        
+        break;
+    }
 
     return p ? fill_name(p, buffer, options) : false;
 }
@@ -79,40 +99,50 @@ bool File::ls(char *buffer, uint8_t options, uint8_t index)
     dir_t* p = nullptr;
     buffer[0]=0;
 
+    if(!(options & (LS_FILE | LS_FOLDER)))
+        return false;
+
     rewind();
-    for(uint8_t i = 0; i < index; i++){
+    for(int8_t i = 0; i <= index; i++){
         p = read_dir_cache();
         if(!p)
             return false;
+
+        // done if past last used entry
+        if(p->name[0] == DIR_NAME_FREE)
+            return false; // Or true?
+        
+        if (p->name[0] == DIR_NAME_DELETED || p->name[0] == '.' || p->name[0] == 0x80){
+            i--;
+            continue;
+        }
+        if(DIR_IS_SUBDIR(p) && !(options & LS_FOLDER)){
+            i--;
+            continue;
+        }
+        if(DIR_IS_FILE(p) && !(options & LS_FILE)){
+            i--;
+            continue;
+        }
     }
 
     return fill_name(p, buffer, options);
 }
 
 bool File::fill_name(dir_t* p, char* buffer, uint8_t options)
-{
-    // done if past last used entry
-    if(p->name[0] == DIR_NAME_FREE)
-        return false; // Or true?
+{    
+    uint8_t w = 0;
+    for(uint8_t i = 0; i < 11; i++){
+        if(p->name[i] == ' ')
+            continue;
 
-    // skip deleted entry and entries for . and  ..
-    if (p->name[0] == DIR_NAME_DELETED || p->name[0] == '.' || p->name[0] == 0x80)
-        return true;
-    
-    if((DIR_IS_FILE(p) && (options & LS_FILE)) || (DIR_IS_SUBDIR(p) && (options & LS_FOLDER))){
-        uint8_t w = 0;
-        for(uint8_t i = 0; i < 11; i++){
-            if(p->name[i] == ' ')
-                continue;
-
-            if(i == 8)
-                buffer[w++] = '.';
-            buffer[w++] = p->name[i];
-        }
-        if(DIR_IS_SUBDIR(p))
-            buffer[w++] = '/';
-        buffer[w] = 0;
+        if(i == 8)
+            buffer[w++] = '.';
+        buffer[w++] = p->name[i];
     }
+    if(DIR_IS_SUBDIR(p))
+        buffer[w++] = '/';
+    buffer[w] = 0;
     return true;
 }
 
@@ -654,7 +684,7 @@ size_t File::write(const uint8_t *buffer, uint16_t size)
         if(!sync())
             return 0;
     }
-    return written;
+    return written-1;
 }
 
 bool File::seek_end()
@@ -663,7 +693,7 @@ bool File::seek_end()
 }
 
 
-uint8_t File::available()
+uint32_t File::available()
 {
     if(!is_open())
         return 0;

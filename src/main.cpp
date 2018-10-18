@@ -37,6 +37,7 @@
 SDCard disk(&PORTB, &DDRB, PB0);
 FAT fs(&disk);
 File root(&fs);
+File folder(&fs);
 File file(&fs);
 
 void handle_error()
@@ -93,11 +94,13 @@ int main()
 
     printf("\nOpening file for write\n");
 
-    if(file.open(root, "TEST.TXT", File::O_CREAT | File::O_WRITE)){
+    folder.open(root, "record", File::O_READ);
+
+    if(file.open(folder, "TEST.TXT", File::O_CREAT | File::O_WRITE)){
         printf("TEST.txt opened\n");
         if(file.rm()){
             printf("Ensuring file new\n");
-            if(file.open(root, "TEST.TXT", File::O_CREAT | File::O_WRITE))
+            if(file.open(folder, "TEST.TXT", File::O_CREAT | File::O_WRITE))
                 printf("New test.txt opened\n");
             else
                 return 0;
@@ -120,7 +123,7 @@ int main()
     file.close();
 
     printf("\nOpening for read\n");
-    if(file.open(root, "TEST.TXT", File::O_RDONLY)){
+    if(file.open(folder, "TEST.TXT", File::O_RDONLY)){
         printf("TEST.txt opened\n");
         while(file.available())
             printf("%c", file.read());

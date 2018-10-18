@@ -106,7 +106,8 @@ public:
     uint32_t get_file_size();
     Type get_type();
     bool add_dir_cluster();
-    uint8_t available();
+    uint32_t available();
+    void rewind();
 
     int print(const char* format, ...);
     size_t write(const uint8_t *buffer, uint16_t size);
@@ -126,8 +127,7 @@ private:
     uint32_t current_position;
     uint32_t dir_block;
     uint8_t dir_index;
-
-    void rewind();
+ 
     dir_t* read_dir_cache();
     uint8_t is_unbuffered_read();
 
