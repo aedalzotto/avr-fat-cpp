@@ -596,7 +596,7 @@ File::Type File::get_type()
 size_t File::write(const uint8_t *buffer, uint16_t size)
 {
     const uint8_t *src = buffer;
-    uint16_t written;
+    uint16_t written =0;
 
     if(!is_file() || !(flags & O_WRITE))
         return 0;
@@ -606,7 +606,7 @@ size_t File::write(const uint8_t *buffer, uint16_t size)
             return 0;
     }
 
-    for(written = 0; written < size; written++){
+    while (written < size){
         uint8_t boc = fs->get_block(current_position);
         uint16_t w_offset = current_position & 0x1FF;
 
@@ -684,7 +684,7 @@ size_t File::write(const uint8_t *buffer, uint16_t size)
         if(!sync())
             return 0;
     }
-    return written-1;
+    return written;
 }
 
 bool File::seek_end()
