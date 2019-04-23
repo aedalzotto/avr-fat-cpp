@@ -34,7 +34,7 @@
 #include <File.h>
 #include <SPI.h>
 
-SDCard disk(&PORTB, &DDRB, PB0);
+SDCard disk(&PORTB, &DDRB, PB2);
 FAT fs(&disk);
 File root(&fs);
 File folder(&fs);
@@ -94,13 +94,13 @@ int main()
 
     printf("\nOpening file for write\n");
 
-    folder.open(root, "record", File::O_READ);
+    //folder.open(root, "record", File::O_READ);
 
-    if(file.open(folder, "TEST.TXT", File::O_CREAT | File::O_WRITE)){
+    if(file.open(root, "TEST.TXT", File::O_CREAT | File::O_WRITE)){
         printf("TEST.txt opened\n");
         if(file.rm()){
             printf("Ensuring file new\n");
-            if(file.open(folder, "TEST.TXT", File::O_CREAT | File::O_WRITE))
+            if(file.open(root, "TEST.TXT", File::O_CREAT | File::O_WRITE))
                 printf("New test.txt opened\n");
             else
                 return 0;
@@ -108,7 +108,7 @@ int main()
             return 0;
         printf("Writing to file\n");
         char buffer[127];
-        sprintf(buffer, "Teste %u\n", 1);
+        sprintf(buffer, "Teste abcdefghijklmnopqrstuvwxyz %u\n", 1);
         if(file.write((const uint8_t*)buffer, strlen(buffer)) != strlen(buffer)+1){
             printf("Write error\n");
             handle_error();
@@ -123,7 +123,7 @@ int main()
     file.close();
 
     printf("\nOpening for read\n");
-    if(file.open(folder, "TEST.TXT", File::O_RDONLY)){
+    if(file.open(root, "TEST.TXT", File::O_RDONLY)){
         printf("TEST.txt opened\n");
         while(file.available())
             printf("%c", file.read());

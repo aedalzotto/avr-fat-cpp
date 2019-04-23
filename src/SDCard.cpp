@@ -58,6 +58,8 @@ bool SDCard::init()
 
 #ifdef __AVR_ATmega2560__
     SPI::init(&DDRB, &DDRB, &DDRB, &DDRB, PB0, PB1, PB2, PB3, &PORTB);
+#elif defined(__AVR_ATmega328P__)
+    SPI::init(&DDRB, &DDRB, &DDRB, &DDRB, PB2, PB5, PB3, PB4, &PORTB);
 #else
     #error "Not compatible. Please add this AVR to the SDCard.cpp init function"
 #endif

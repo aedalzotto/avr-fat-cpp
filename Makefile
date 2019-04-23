@@ -1,11 +1,11 @@
-BIN    = air_drums
-MCU    = atmega2560
+BIN    = avr-fat-cpp
+MCU    = atmega328p
 F_CPU  = 16000000
 BAUD   = 57600
 
 PORT = /dev/ttyACM0
 SPEED = 115200
-PROGRAMMER = wiring
+PROGRAMMER = arduino
 
 CC      = avr-g++
 OBJCOPY = avr-objcopy
