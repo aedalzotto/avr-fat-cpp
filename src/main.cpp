@@ -37,7 +37,6 @@
 SDCard disk(&PORTB, &DDRB, PB2);
 FAT fs(&disk);
 File root(&fs);
-File folder(&fs);
 File file(&fs);
 
 void handle_error()
@@ -94,8 +93,6 @@ int main()
 
     printf("\nOpening file for write\n");
 
-    //folder.open(root, "record", File::O_READ);
-
     if(file.open(root, "TEST.TXT", File::O_CREAT | File::O_WRITE)){
         printf("TEST.txt opened\n");
         if(file.rm()){
@@ -109,7 +106,7 @@ int main()
         printf("Writing to file\n");
         char buffer[127];
         sprintf(buffer, "Teste abcdefghijklmnopqrstuvwxyz %u\n", 1);
-        if(file.write((const uint8_t*)buffer, strlen(buffer)) != strlen(buffer)+1){
+        if(file.write((const uint8_t*)buffer, strlen(buffer)) != strlen(buffer)){
             printf("Write error\n");
             handle_error();
         } else {
