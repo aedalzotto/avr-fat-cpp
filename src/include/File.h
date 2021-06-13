@@ -35,7 +35,7 @@
 #include <avr/pgmspace.h>
 #include <stdio.h>
 #include <ctype.h>
-#include <FAT.h>
+#include "FAT.h"
 
 class File {
 public:
