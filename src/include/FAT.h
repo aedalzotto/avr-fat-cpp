@@ -30,8 +30,8 @@
 #ifndef _FAT_H_
 #define _FAT_H_
 
-#include <SDCard.h> // For now the only option
-#include <FatStructs.h>
+#include "SDCard.h" // For now the only option
+#include "FatStructs.h"
 
 union cache_t {
            /** Used to access cached file data blocks. */

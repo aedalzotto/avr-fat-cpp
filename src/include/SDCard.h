@@ -31,8 +31,8 @@
 #define _SDCARD_H_
 
 #include <stdint.h>
-#include <Millis.h>
-#include <SPI.h>
+#include "Millis.h"
+#include "SPI.h"
 
 class SDCard {
 public:

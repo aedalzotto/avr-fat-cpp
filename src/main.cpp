@@ -28,13 +28,13 @@
  */
 
 #include <avr/io.h>
-#include <serial.h>
-#include <SDCard.h>
-#include <FAT.h>
-#include <File.h>
-#include <SPI.h>
+#include "serial.h"
+#include "sd/include/SDCard.h"
+#include "sd/include/FAT.h"
+#include "sd/include/File.h"
+#include "sd/include/SPI.h"
 
-SDCard disk(&PORTB, &DDRB, PB2);
+SDCard disk(&PORTB, &DDRB, PB2); // Third parameter is the CS pin. (In this case PB2 is digital pin 10 in Arduino UNO)
 FAT fs(&disk);
 File root(&fs);
 File file(&fs);
